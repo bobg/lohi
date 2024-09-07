@@ -8,11 +8,13 @@ import (
 	"github.com/boltdb/bolt"
 )
 
+// CachingService is a Service that permanently caches place lookups in a bolt database.
 type CachingService struct {
 	db   *bolt.DB
 	next Service
 }
 
+// NewCachingService creates a new CachingService that "wraps" the given Service and caches lookups in the given filename.
 func NewCachingService(filename string, next Service) (*CachingService, error) {
 	db, err := bolt.Open(filename, 0600, nil)
 	if err != nil {
@@ -24,12 +26,17 @@ func NewCachingService(filename string, next Service) (*CachingService, error) {
 	}, nil
 }
 
+// Close closes the cache database.
 func (s *CachingService) Close() error {
 	return s.db.Close()
 }
 
 var bucketName = []byte("places")
 
+// GetPlace looks up a [Place] by ID.
+// If the place is in the cache, it is returned.
+// Otherwise the wrapped Service is called to fetch it,
+// and the result is stored in the cache before being returned.
 func (s *CachingService) GetPlace(ctx context.Context, id string) (*Place, error) {
 	var place *Place
 	err := s.db.Update(func(tx *bolt.Tx) error {

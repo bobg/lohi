@@ -38,11 +38,13 @@ func run() error {
 
 	ctx := context.Background()
 
-	var (
-		placeService places.Service
-		err          error
-	)
-	placeService, err = places.NewRealService(ctx, credsFile, tokenFile)
+	creds, err := os.ReadFile(credsFile)
+	if err != nil {
+		return errors.Wrapf(err, "reading %s", credsFile)
+	}
+
+	var placeService places.Service
+	placeService, err = places.NewRealService(ctx, creds, tokenFile)
 	if err != nil {
 		return errors.Wrap(err, "creating real place service")
 	}
@@ -127,10 +129,10 @@ func showVisit(ctx context.Context, v *schema.Visit, startTime time.Time, dur st
 	}
 
 	fmt.Printf("  %s [%s]", startTime.Format("15:04"), dur)
-	if candidate := v.TopCandidate; candidate != nil && candidate.PlaceId != "" {
-		place, err := placeService.GetPlace(ctx, candidate.PlaceId)
+	if candidate := v.TopCandidate; candidate != nil && candidate.PlaceID != "" {
+		place, err := placeService.GetPlace(ctx, candidate.PlaceID)
 		if err != nil {
-			return 0, errors.Wrapf(err, "getting place %s", candidate.PlaceId)
+			return 0, errors.Wrapf(err, "getting place %s", candidate.PlaceID)
 		}
 		fmt.Print(" ")
 		showPlace(place)
