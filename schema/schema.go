@@ -1,3 +1,4 @@
+// Package schema defines the types used to represent Google Location History data.
 package schema
 
 // History is the top-level structure of a Google Location History JSON file.
@@ -106,6 +107,11 @@ type (
 		Time  string `json:"time,omitempty"`
 	}
 
+	Trip struct {
+		Destinations          []*IdentifiedPlace `json:"destinations,omitempty"`
+		DistanceFromOriginKms int64              `json:"distanceFromOriginKms,omitempty"`
+	}
+
 	Visit struct {
 		HierarchyLevel  int64           `json:"hierarchyLevel,omitempty"`
 		IsTimelessVisit bool            `json:"isTimelessVisit,omitempty"`
@@ -116,10 +122,5 @@ type (
 	WifiScan struct {
 		DeliveryTime   string          `json:"deliveryTime,omitempty"`
 		DevicesRecords []*DeviceRecord `json:"devicesRecords,omitempty"`
-	}
-
-	Trip struct {
-		Destinations          []*IdentifiedPlace `json:"destinations,omitempty"`
-		DistanceFromOriginKms int64              `json:"distanceFromOriginKms,omitempty"`
 	}
 )

@@ -1,3 +1,4 @@
+// Package places defines types for interacting with the Google Places API.
 package places
 
 // Place is a Google Places API place.
