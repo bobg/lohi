@@ -1,4 +1,4 @@
-// Command lohi parses a Google Takeout location history file and prints a human-readable summary.
+// Command lohi parses a Google location-history file and prints a human-readable summary.
 package main
 
 import (
